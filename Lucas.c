@@ -93,6 +93,7 @@ int main( void ) {
     embaralhar_perguntas(indices, NUM_TOTAL_PERGUNTAS);
 
     int pontuacao_total = 0;
+    int pontuacao_maxima = 0;
 
     printf("\033[4m\033[1m===== JOGO - QUIZ DA SUSTENTABILIDADE =====\033[0m\n");
 
@@ -101,6 +102,7 @@ int main( void ) {
         struct Pergunta p = banco[id];
 
         int correta = p.correta;
+        pontuacao_maxima += p.pontuacao;    
         embaralhar_alternativas(p.alternativas, &correta);
 
         printf("\033[1m\nPergunta %d:\n%s\033[0m\n", i + 1, p.enunciado);
@@ -123,7 +125,7 @@ int main( void ) {
     }
 
     printf("\n\n\033[4m\033[1m===== FIM DO JOGO =====\033[0m\n");
-    printf("Pontuação final: \033[1m%d de %d\033[0m pontos possíveis.\n", pontuacao_total, NUM_PERGUNTAS * 100);
+    printf("Pontuação final: \033[1m%d de %d\033[0m pontos possíveis.\n", pontuacao_total, pontuacao_maxima);
 
     return 0;
 }

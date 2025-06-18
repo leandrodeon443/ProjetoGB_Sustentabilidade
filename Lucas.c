@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <locale.h>
 
 #define NUM_PERGUNTAS 20
 #define NUM_TOTAL_PERGUNTAS 20
@@ -86,12 +87,14 @@ void embaralhar_alternativas(char alternativas[][100], int *correta) {
 }
 
 int main( void ) {
+    setlocale(LC_ALL, "Portuguese_Brazil"); // print UTF-8 char
     srand(time(NULL));
     int indices[NUM_TOTAL_PERGUNTAS];
     embaralhar_perguntas(indices, NUM_TOTAL_PERGUNTAS);
 
     int pontuacao_total = 0;
-    printf("===== JOGO - QUIZ DA SUSTENTABILIDADE =====\n");
+
+    printf("\033[4m\033[1m===== JOGO - QUIZ DA SUSTENTABILIDADE =====\033[0m\n");
 
     for (int i = 0; i < NUM_PERGUNTAS; i++) {
         int id = indices[i];
@@ -100,7 +103,7 @@ int main( void ) {
         int correta = p.correta;
         embaralhar_alternativas(p.alternativas, &correta);
 
-        printf("\nPergunta %d:\n%s\n", i + 1, p.enunciado);
+        printf("\033[1m\nPergunta %d:\n%s\033[0m\n", i + 1, p.enunciado);
         for (int j = 0; j < NUM_ALTERNATIVAS; j++) {
             printf("%c) %s\n", 'a' + j, p.alternativas[j]);
         }
@@ -112,15 +115,15 @@ int main( void ) {
         int index = resp - 'a';
 
         if (index == correta) {
-            printf("✅ Correto! +%d pontos\n", p.pontuacao);
+            printf("\033[38;2;100;255;100m✅ Correto! +%d pontos\033[0m\n", p.pontuacao);
             pontuacao_total += p.pontuacao;
         } else {
-            printf("❌ Errado! Resposta correta: %s\n", p.alternativas[correta]);
+            printf("\033[38;2;255;100;100m❌ Errado! Resposta correta: %s\033[0m\n", p.alternativas[correta]);
         }
     }
 
-    printf("\n===== FIM DO JOGO =====\n");
-    printf("Pontuação final: %d de %d pontos possíveis.\n", pontuacao_total, NUM_PERGUNTAS * 100);
+    printf("\n\n\033[4m\033[1m===== FIM DO JOGO =====\033[0m\n");
+    printf("Pontuação final: \033[1m%d de %d\033[0m pontos possíveis.\n", pontuacao_total, NUM_PERGUNTAS * 100);
 
     return 0;
 }

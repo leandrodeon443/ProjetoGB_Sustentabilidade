@@ -159,23 +159,10 @@ int main( void ) {
         }
     }
 
-    // Define a cor da mensagem final conforme desempenho
-    char* format;
-    if (pontuacao_total >= (pontuacao_maxima * 0.95 ) ) {
-        // verde (excelente)
-        format = "\033[48;2;100;255;100m\033[38;2;255;255;255m";
-    } else if (pontuacao_maxima <= (pontuacao_maxima * 0.50)) {
-        // vermelho (baixo desempenho)
-        format = "\033[48;2;255;100;100m\033[38;2;255;255;255m";
-    } else {
-        format = "\033[38;2;255;255;255m";
-    }
-
 
     // Mostra a pontuação final
     printf("\n\n\033[4m\033[1m===== FIM DO JOGO =====\033[0m\n");
-    printf("%sPontuação final: %d de %d pontos possíveis.\033[0m\n", 
-        format,
+    printf("Pontuação final: %d de %d pontos possíveis.\033[0m\n", 
         pontuacao_total, 
         pontuacao_maxima
     );

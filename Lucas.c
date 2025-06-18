@@ -124,8 +124,26 @@ int main( void ) {
         }
     }
 
+    /* modifica a cor da mensagem de acordo com a pontuação  */
+    char* format;
+    if (pontuacao_total >= (pontuacao_maxima * 0.95 ) ) {
+        // caso vá bem no quiz (cor verde)
+        format = "\033[48;2;100;255;100m\033[38;2;255;255;255m";
+    } else if (pontuacao_maxima <= (pontuacao_maxima * 0.50)) {
+        // caso vá mal no quiz (cor vermelha)
+        format = "\033[48;2;255;100;100m\033[38;2;255;255;255m";
+    } else {
+        format = "\033[38;2;255;255;255m";
+    }
+
+
+    /* imprime o resultado final do quiz */
     printf("\n\n\033[4m\033[1m===== FIM DO JOGO =====\033[0m\n");
-    printf("Pontuação final: \033[1m%d de %d\033[0m pontos possíveis.\n", pontuacao_total, pontuacao_maxima);
+    printf("%sPontuação final: %d de %d pontos possíveis.\033[0m\n", 
+        format,
+        pontuacao_total, 
+        pontuacao_maxima
+    );
 
     return 0;
 }

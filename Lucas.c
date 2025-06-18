@@ -1,18 +1,40 @@
+/*
+ * GRUPO: Gustavo Dosso, Leandro Deon, Lucas Pontes
+ *
+ * Quiz da Sustentabilidade
+ * -------------------------
+ * Este programa é um quiz interativo em linguagem C com 20 perguntas sobre sustentabilidade,
+ * consumo consciente, meio ambiente e responsabilidade social.
+ * As perguntas e alternativas são embaralhadas para tornar o jogo dinâmico.
+ * Ao final, a pontuação do usuário é calculada e apresentada com feedback visual.
+ *
+ * Recursos utilizados:
+ * - Embaralhamento de perguntas e alternativas
+ * - Cores ANSI para destacar acertos e erros
+ * - Localização UTF-8 para exibir acentuação corretamente
+ *
+ * Desenvolvido para fins educacionais.
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <time.h>
-#include <locale.h>
+#include <time.h>   // para usar time() com srand()
+#include <locale.h> // para configurar acentuação/UTF-8 no terminal
 
-#define NUM_PERGUNTAS 20
-#define NUM_TOTAL_PERGUNTAS 20
-#define NUM_ALTERNATIVAS 4
 
+// Constantes para definir limites
+#define NUM_PERGUNTAS 20        // número de perguntas a serem usadas no quiz
+#define NUM_TOTAL_PERGUNTAS 20  // número total disponível no banco
+#define NUM_ALTERNATIVAS 4      // número de alternativas por pergunta
+
+
+// Estrutura que define uma pergunta do quiz
 struct Pergunta {
-    char enunciado[200];
-    char alternativas[NUM_ALTERNATIVAS][100];
-    int correta; // índice da alternativa correta (0 a 3)
-    int pontuacao;
+    char enunciado[200];               
+    char alternativas[NUM_ALTERNATIVAS][100];   // lista de alternativas
+    int correta;                                // índice da alternativa correta (0 a 3)
+    int pontuacao;                              // pontuação associada à pergunta
 };
 
 struct Pergunta banco[NUM_TOTAL_PERGUNTAS] = {
@@ -58,10 +80,14 @@ struct Pergunta banco[NUM_TOTAL_PERGUNTAS] = {
      {"Reduz o lixo e economiza recursos", "Gera mais resíduos", "É moda", "Não tem impacto"}, 0, 85}
 };
 
+
+// Função que embaralha os índices das perguntas para apresentar em ordem aleatória
 void embaralhar_perguntas(int indices[], int tamanho) {
+    // Preenche o vetor com os índices originais
     for (int i = 0; i < tamanho; i++) {
         indices[i] = i;
     }
+    // Embaralha os índices usando troca aleatória
     for (int i = 0; i < tamanho; i++) {
         int j = rand() % tamanho;
         int temp = indices[i];
@@ -70,15 +96,21 @@ void embaralhar_perguntas(int indices[], int tamanho) {
     }
 }
 
+// Função que embaralha as alternativas de uma pergunta mantendo controle da resposta correta
 void embaralhar_alternativas(char alternativas[][100], int *correta) {
     for (int i = 0; i < 10; i++) {
+
         int a = rand() % NUM_ALTERNATIVAS;
         int b = rand() % NUM_ALTERNATIVAS;
         if (a == b) continue;
+
+        // Troca o texto das alternativas
         char temp[100];
         strcpy(temp, alternativas[a]);
         strcpy(alternativas[a], alternativas[b]);
         strcpy(alternativas[b], temp);
+
+        // Ajusta o índice da correta caso ela tenha sido trocada
         if (a == *correta)
             *correta = b;
         else if (b == *correta)
@@ -88,7 +120,8 @@ void embaralhar_alternativas(char alternativas[][100], int *correta) {
 
 int main( void ) {
     setlocale(LC_ALL, "Portuguese_Brazil"); // print UTF-8 char
-    srand(time(NULL));
+
+    srand(time(NULL)); // inicializa gerador de números aleatórios com base no tempo atual
     int indices[NUM_TOTAL_PERGUNTAS];
     embaralhar_perguntas(indices, NUM_TOTAL_PERGUNTAS);
 
@@ -110,12 +143,14 @@ int main( void ) {
             printf("%c) %s\n", 'a' + j, p.alternativas[j]);
         }
 
+        // Lê a resposta do usuário
         char resp;
         printf("Sua resposta: ");
         scanf(" %c", &resp);
-        while ((getchar()) != '\n');
-        int index = resp - 'a';
-
+        while ((getchar()) != '\n'); // limpa o buffer do teclado
+        int index = resp - 'a'; // converte letra para índice (ex: 'a' → 0)
+        
+        // Verifica se a resposta está correta
         if (index == correta) {
             printf("\033[38;2;100;255;100m✅ Correto! +%d pontos\033[0m\n", p.pontuacao);
             pontuacao_total += p.pontuacao;
@@ -124,20 +159,20 @@ int main( void ) {
         }
     }
 
-    /* modifica a cor da mensagem de acordo com a pontuação  */
+    // Define a cor da mensagem final conforme desempenho
     char* format;
     if (pontuacao_total >= (pontuacao_maxima * 0.95 ) ) {
-        // caso vá bem no quiz (cor verde)
+        // verde (excelente)
         format = "\033[48;2;100;255;100m\033[38;2;255;255;255m";
     } else if (pontuacao_maxima <= (pontuacao_maxima * 0.50)) {
-        // caso vá mal no quiz (cor vermelha)
+        // vermelho (baixo desempenho)
         format = "\033[48;2;255;100;100m\033[38;2;255;255;255m";
     } else {
         format = "\033[38;2;255;255;255m";
     }
 
 
-    /* imprime o resultado final do quiz */
+    // Mostra a pontuação final
     printf("\n\n\033[4m\033[1m===== FIM DO JOGO =====\033[0m\n");
     printf("%sPontuação final: %d de %d pontos possíveis.\033[0m\n", 
         format,

@@ -85,7 +85,7 @@ void embaralhar_alternativas(char alternativas[][100], int *correta) {
     }
 }
 
-int main() {
+int main( void ) {
     srand(time(NULL));
     int indices[NUM_TOTAL_PERGUNTAS];
     embaralhar_perguntas(indices, NUM_TOTAL_PERGUNTAS);

@@ -162,7 +162,7 @@ int main( void ) {
 
     // Mostra a pontuação final
     printf("\n\n\033[4m\033[1m===== FIM DO JOGO =====\033[0m\n");
-    printf("Pontuação final: %d de %d pontos possíveis.\033[0m\n", 
+    printf("Pontuação final: %d de %d pontos possíveis.\n", 
         pontuacao_total, 
         pontuacao_maxima
     );

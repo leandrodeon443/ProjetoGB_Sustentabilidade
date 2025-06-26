@@ -62,8 +62,6 @@ gcc main.c -o quiz.exe
 Os dados do usuário e o resultado do quiz são salvos automaticamente em um arquivo chamado database.txt. Exemplo de entrada:
 
 ```txt
-Copiar
-Editar
 [2025-06-26 | 14:35]
 Idade: 22
 Cidade: Campinas

@@ -192,7 +192,7 @@ void print_banner(const char *linhas[], int qtd_linhas) {
 }
 
 int main( void ) {
-    setlocale(LC_ALL, "Portuguese_Brazil"); // print UTF-8 char
+    setlocale(LC_ALL, ""); // print UTF-8 char
 
     // banners
     const char *banner_title[] = {
@@ -308,7 +308,7 @@ int main( void ) {
         pontuacao_maxima += p.pontuacao;    
         embaralhar_alternativas(p.alternativas, &correta);
 
-        printf("Pergunta %d:\n%s\n", i + 1, p.enunciado);
+        printf("\nPergunta %d:\n%s\n", i + 1, p.enunciado);
         for (int j = 0; j < NUM_ALTERNATIVAS; j++) {
             printf("%c) %s\n", 'a' + j, p.alternativas[j]);
         }
@@ -368,7 +368,7 @@ int main( void ) {
     
     fclose(banco_de_dados);
 
-    Sleep(10);
+    Sleep(10000); // 10s para o usuário analizar o resultado
 
     return 0;
 }

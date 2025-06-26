@@ -71,3 +71,27 @@ Ocupação: Estudante
 Frequência de Internet: Diariamente
 Participação Ambiental: Sim, projetos na escola
 ```
+
+## Bibliografia
+
+https://stackoverflow.com/questions/18047409/how-do-you-output-a-banner-every-10-lines
+
+https://stackoverflow.com/questions/27878570/c-ifdef-else-endif-directives
+
+https://stackoverflow.com/questions/8666378/detect-windows-or-linux-in-c-c
+
+https://www.w3schools.com/c/c_structs.php
+
+https://www.cprogramming.com/tutorial/unicode.html
+
+https://www.generacodice.com/pt/articolo/364244/a-formata-o-de-texto-em-ruby-para-a-embalagem-desliza
+
+http://prorum.com/?qa=2547/como-justificar-texto-usando-programacao-dinâmica
+
+https://www.nerdfonts.com/
+
+https://gist.github.com/XVilka/8346728
+
+https://stackoverflow.com/questions/1489183/how-can-i-use-ruby-to-colorize-the-text-output-to-a-terminal
+
+https://learn.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences#extended-colors

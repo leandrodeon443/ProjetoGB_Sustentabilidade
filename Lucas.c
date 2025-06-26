@@ -303,7 +303,7 @@ int main( void ) {
         pontuacao_maxima += p.pontuacao;    
         embaralhar_alternativas(p.alternativas, &correta);
 
-        printf("\033[1m\nPergunta %d:\n%s\033[0m\n", i + 1, p.enunciado);
+        printf("Pergunta %d:\n%s\n", i + 1, p.enunciado);
         for (int j = 0; j < NUM_ALTERNATIVAS; j++) {
             printf("%c) %s\n", 'a' + j, p.alternativas[j]);
         }
@@ -317,10 +317,10 @@ int main( void ) {
         
         // Verifica se a resposta está correta
         if (index == correta) {
-            printf("\033[38;2;100;255;100m✅ Correto! +%d pontos\033[0m\n", p.pontuacao);
+            printf("✅ Correto! +%d pontos\n", p.pontuacao);
             pontuacao_total += p.pontuacao;
         } else {
-            printf("\033[38;2;255;100;100m❌ Errado! Resposta correta: %s\033[0m\n", p.alternativas[correta]);
+            printf("❌ Errado! Resposta correta: %s\n", p.alternativas[correta]);
         }
     }
 

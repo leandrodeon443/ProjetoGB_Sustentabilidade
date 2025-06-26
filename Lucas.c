@@ -19,6 +19,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include <time.h>   // para usar time() com srand()
 #include <locale.h> // para configurar acentuação/UTF-8 no terminal
 
@@ -27,8 +28,19 @@
 #define NUM_PERGUNTAS 20        // número de perguntas a serem usadas no quiz
 #define NUM_TOTAL_PERGUNTAS 20  // número total disponível no banco
 #define NUM_ALTERNATIVAS 4      // número de alternativas por pergunta
+#define TAM 100
 
-FILE *banco_de_dados;
+
+// Estrutura para armazenar dados de cadastro do usuário
+struct Usuario {
+    int idade;
+    char cidade[TAM];
+    char genero[TAM];
+    char escolaridade[TAM];
+    char ocupacao[TAM];
+    char frequenciaInternet[TAM];
+    char participacaoAmbiental[TAM];
+};
 
 
 // Estrutura que define uma pergunta do quiz
@@ -98,6 +110,22 @@ void embaralhar_perguntas(int indices[], int tamanho) {
     }
 }
 
+
+// Função para remover '\n' final de strings
+void limparNovaLinha(char *str) {
+    str[strcspn(str, "\n")] = 0;
+}
+
+// Função para verificar se uma string está vazia (apenas espaços ou nada)
+int stringVazia(const char *str) {
+    while (*str) {
+        if (!isspace(*str)) return 0;
+        str++;
+    }
+    return 1;
+}
+
+
 // Função que embaralha as alternativas de uma pergunta mantendo controle da resposta correta
 void embaralhar_alternativas(char alternativas[][100], int *correta) {
     for (int i = 0; i < 10; i++) {
@@ -122,6 +150,89 @@ void embaralhar_alternativas(char alternativas[][100], int *correta) {
 
 int main( void ) {
     setlocale(LC_ALL, "Portuguese_Brazil"); // print UTF-8 char
+
+
+
+    // *******************
+    // CADASTRO DO USUÁRIO
+    // *******************
+
+
+    struct Usuario usuario;
+
+    char buffer[TAM];
+
+    printf("📋 Dados do Usuário para Coleta\n\n");
+
+    // Idade: deve ser um número positivo
+    do {
+        printf("Digite sua idade: ");
+        fgets(buffer, TAM, stdin);
+        usuario.idade = atoi(buffer);
+        if (usuario.idade <= 0) {
+            printf("❌ Idade inválida. Tente novamente.\n");
+        }
+    } while (usuario.idade <= 0);
+
+    // Cidade: não pode ser vazia
+    do {
+        printf("Cidade: ");
+        fgets(usuario.cidade, TAM, stdin);
+        limparNovaLinha(usuario.cidade);
+        if (stringVazia(usuario.cidade)) {
+            printf("❌ Cidade não pode estar vazia. Tente novamente.\n");
+        }
+    } while (stringVazia(usuario.cidade));
+
+    // Gênero (opcional)
+    printf("Gênero (opcional): ");
+    fgets(usuario.genero, TAM, stdin);
+    limparNovaLinha(usuario.genero);
+
+    // Escolaridade: não pode ser vazia
+    do {
+        printf("Nível de Escolaridade: ");
+        fgets(usuario.escolaridade, TAM, stdin);
+        limparNovaLinha(usuario.escolaridade);
+        if (stringVazia(usuario.escolaridade)) {
+            printf("❌ Escolaridade não pode estar vazia. Tente novamente.\n");
+        }
+    } while (stringVazia(usuario.escolaridade));
+
+    // Ocupação: não pode ser vazia
+    do {
+        printf("Digite sua ocupação principal (ex: estudante, agricultor, engenheiro...): ");
+        fgets(usuario.ocupacao, TAM, stdin);
+        limparNovaLinha(usuario.ocupacao);
+        if (stringVazia(usuario.ocupacao)) {
+            printf("❌ Ocupação não pode estar vazia. Tente novamente.\n");
+        }
+    } while (stringVazia(usuario.ocupacao));
+
+    // Frequência de Acesso à Internet: não pode ser vazia
+    do {
+        printf("Frequência de Acesso à Internet: ");
+        fgets(usuario.frequenciaInternet, TAM, stdin);
+        limparNovaLinha(usuario.frequenciaInternet);
+        if (stringVazia(usuario.frequenciaInternet)) {
+            printf("❌ Esse campo não pode estar vazio. Tente novamente.\n");
+        }
+    } while (stringVazia(usuario.frequenciaInternet));
+
+    // Participação em Ações Ambientais: não pode ser vazia
+    do {
+        printf("Participação em Ações Ambientais: ");
+        fgets(usuario.participacaoAmbiental, TAM, stdin);
+        limparNovaLinha(usuario.participacaoAmbiental);
+        if (stringVazia(usuario.participacaoAmbiental)) {
+            printf("❌ Esse campo não pode estar vazio. Tente novamente.\n");
+        }
+    } while (stringVazia(usuario.participacaoAmbiental));
+
+
+    // *******************
+    // QUIZ
+    // *******************
 
     srand(time(NULL)); // inicializa gerador de números aleatórios com base no tempo atual
     int indices[NUM_TOTAL_PERGUNTAS];
@@ -175,19 +286,27 @@ int main( void ) {
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);  
 
-    banco_de_dados = fopen("database.txt", "a");
+    FILE *banco_de_dados = fopen("database.txt", "a");
+
+    if (banco_de_dados == NULL) {
+        printf("Erro ao abrir o arquivo para escrita.\n");
+    return 1;
+}
+
     fprintf( 
         banco_de_dados, 
         "\n\n[%4d-%2d-%2d | %2d:%2d]", 
         tm.tm_year, tm.tm_mon, tm.tm_mday, tm.tm_hour, tm.tm_min
     );
 
-    fprintf(
-        banco_de_dados,
-        "\nPontuação final: %d de %d pontos possíveis.", 
-        pontuacao_total, 
-        pontuacao_maxima
-    );
+    fprintf(banco_de_dados, "\n");
+    fprintf(banco_de_dados, "Idade: %d\n", usuario.idade);
+    fprintf(banco_de_dados, "Cidade: %s\n", usuario.cidade);
+    fprintf(banco_de_dados, "Gênero: %s\n", usuario.genero);
+    fprintf(banco_de_dados, "Escolaridade: %s\n", usuario.escolaridade);
+    fprintf(banco_de_dados, "Ocupação: %s\n", usuario.ocupacao);
+    fprintf(banco_de_dados, "Frequência de Internet: %s\n", usuario.frequenciaInternet);
+    fprintf(banco_de_dados, "Participação Ambiental: %s\n", usuario.participacaoAmbiental);
     
     fclose(banco_de_dados);
 

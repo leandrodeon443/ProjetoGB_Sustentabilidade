@@ -30,6 +30,16 @@
 #define NUM_ALTERNATIVAS 4      // número de alternativas por pergunta
 #define TAM 100                 // Define o tamanho de entrada aceita pelo usuário no cadastro
 
+// constantes para os banners
+#define MAX_LINHAS 10
+#define LARGURA_BANNER 60
+#define bb_up_left "#"      // "╔"
+#define bb_up_right "#"     // "╗"
+#define bb_down_left "#"    // "╚"
+#define bb_down_right "#"   // "╝"
+#define bb_up_down "="      // "═"
+#define bb_left_right "|"   // "║"
+
 
 // Estrutura para armazenar dados de cadastro do usuário
 struct Usuario {
@@ -148,21 +158,62 @@ void embaralhar_alternativas(char alternativas[][100], int *correta) {
     }
 }
 
+void print_banner(const char *linhas[], int qtd_linhas) {
+    int i;
+
+    // Topo ╔═══════════════╗
+    printf(bb_up_left);
+    for (i = 0; i < LARGURA_BANNER; i++) printf(bb_up_down);
+    printf("%s\n", bb_up_right);
+
+
+    // Linhas com texto centralizado
+    for (i = 0; i < qtd_linhas; i++) {
+        int espacos = LARGURA_BANNER - strlen(linhas[i]);
+        int esquerda = espacos / 2;
+        int direita = espacos - esquerda;
+
+        printf(bb_left_right);
+        for (int j = 0; j < esquerda; j++) printf(" ");
+        printf("%s", linhas[i]);
+        for (int j = 0; j < direita; j++) printf(" ");
+        printf("%s\n", bb_left_right);
+    }
+
+    // Base ╚═══════════════╝
+    printf(bb_down_left);
+    for (i = 0; i < LARGURA_BANNER; i++) printf(bb_up_down);
+    printf("%s\n", bb_down_right);
+}
+
 int main( void ) {
     setlocale(LC_ALL, "Portuguese_Brazil"); // print UTF-8 char
 
-
+    // banners
+    const char *banner_title[] = {
+        "BEM-VINDO AO QUIZ DA SUSTENTABILIDADE",
+        "Coleta de Dados do Participante"
+    };
+    const char *banner_data_collected[] = {
+        "DADOS COLETADOS COM SUCESSO!"
+    };
+    const char *banner_welcome_quiz[] = {
+        "JOGO - QUIZ DA SUSTENTABILIDADE"
+    };
+    const char *banner_end_game[] = {
+        "FIM DO JOGO"
+    };
 
     // *******************
     // CADASTRO DO USUÁRIO
     // *******************
 
+    print_banner(banner_title, 2);
+    printf("\n");
 
     struct Usuario usuario;
 
     char buffer[TAM];
-
-    printf("📋 Dados do Usuário para Coleta\n\n");
 
     // Idade: deve ser um número positivo
     do {
@@ -241,7 +292,8 @@ int main( void ) {
     int pontuacao_total = 0;
     int pontuacao_maxima = 0;
 
-    printf("\033[4m\033[1m===== JOGO - QUIZ DA SUSTENTABILIDADE =====\033[0m\n");
+    print_banner(banner_welcome_quiz, 1);
+    printf("\n");
 
     for (int i = 0; i < NUM_PERGUNTAS; i++) {
         int id = indices[i];
@@ -274,7 +326,8 @@ int main( void ) {
 
 
     // Mostra a pontuação final
-    printf("\n\n\033[4m\033[1m===== FIM DO JOGO =====\033[0m\n");
+    printf("\n\n");
+    print_banner(banner_end_game, 1);
     printf("Pontuação final: %d de %d pontos possíveis.\n", 
         pontuacao_total, 
         pontuacao_maxima

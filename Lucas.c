@@ -28,6 +28,8 @@
 #define NUM_TOTAL_PERGUNTAS 20  // número total disponível no banco
 #define NUM_ALTERNATIVAS 4      // número de alternativas por pergunta
 
+FILE *banco_de_dados;
+
 
 // Estrutura que define uma pergunta do quiz
 struct Pergunta {
@@ -166,6 +168,32 @@ int main( void ) {
         pontuacao_total, 
         pontuacao_maxima
     );
+
+    
+    // Registra os dados em um banco
+
+    time_t t = time(NULL);
+    struct tm tm = *localtime(&t);  
+
+    banco_de_dados = fopen("database.txt", "a");
+    fprintf( 
+        banco_de_dados, 
+        "\n\n[%4d-%2d-%2d | %2d:%2d]", 
+        tm.tm_year, tm.tm_mon, tm.tm_mday, tm.tm_hour, tm.tm_min
+    );
+
+    fprintf(
+        banco_de_dados,
+        "\nPontuação final: %d de %d pontos possíveis.", 
+        pontuacao_total, 
+        pontuacao_maxima
+    );
+    
+    fclose(banco_de_dados);
+
+
+
+
 
     return 0;
 }

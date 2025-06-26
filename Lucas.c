@@ -28,7 +28,7 @@
 #define NUM_PERGUNTAS 20        // número de perguntas a serem usadas no quiz
 #define NUM_TOTAL_PERGUNTAS 20  // número total disponível no banco
 #define NUM_ALTERNATIVAS 4      // número de alternativas por pergunta
-#define TAM 100
+#define TAM 100                 // Define o tamanho de entrada aceita pelo usuário no cadastro
 
 
 // Estrutura para armazenar dados de cadastro do usuário
@@ -309,10 +309,6 @@ int main( void ) {
     fprintf(banco_de_dados, "Participação Ambiental: %s\n", usuario.participacaoAmbiental);
     
     fclose(banco_de_dados);
-
-
-
-
 
     return 0;
 }

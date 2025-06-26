@@ -2,3 +2,5 @@ launch.json
 tasks.json
 Lucas.exe
 database.txt
+banner.c
+banner.exe

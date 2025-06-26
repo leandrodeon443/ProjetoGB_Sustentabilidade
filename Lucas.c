@@ -22,6 +22,11 @@
 #include <ctype.h>
 #include <time.h>   // para usar time() com srand()
 #include <locale.h> // para configurar acentuação/UTF-8 no terminal
+#ifdef _WIN32 // para usar sleep()
+    #include <windows.h>
+#else
+    #include <unistd.h>
+#endif
 
 
 // Constantes para definir limites
@@ -362,6 +367,8 @@ int main( void ) {
     fprintf(banco_de_dados, "Participação Ambiental: %s\n", usuario.participacaoAmbiental);
     
     fclose(banco_de_dados);
+
+    Sleep(10);
 
     return 0;
 }

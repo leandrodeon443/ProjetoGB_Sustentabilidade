@@ -18,10 +18,11 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
+#include <string.h> //funções para trabalhar com strings
+#include <time.h> //funções de tempo
+#include <windows.h> //para reconhecer acentuação
 #include <ctype.h>
 #include <time.h>   // para usar time() com srand()
-#include <locale.h> // para configurar acentuação/UTF-8 no terminal
 #ifdef _WIN32 // para usar sleep()
     #include <windows.h>
 #else
@@ -30,9 +31,8 @@
 
 
 // Constantes para definir limites
-#define NUM_PERGUNTAS 20        // número de perguntas a serem usadas no quiz
-#define NUM_TOTAL_PERGUNTAS 20  // número total disponível no banco
-#define NUM_ALTERNATIVAS 4      // número de alternativas por pergunta
+#define NUM_PERGUNTAS 4 //a principio será fixo o número de perguntas, temos que revisar
+#define NUM_ALTERNATIVAS 4 // isso é fixo
 #define TAM 100                 // Define o tamanho de entrada aceita pelo usuário no cadastro
 
 // constantes para os banners
@@ -57,16 +57,16 @@ struct Usuario {
     char participacaoAmbiental[TAM];
 };
 
-
-// Estrutura que define uma pergunta do quiz
-struct Pergunta {
-    char enunciado[200];               
-    char alternativas[NUM_ALTERNATIVAS][100];   // lista de alternativas
-    int correta;                                // índice da alternativa correta (0 a 3)
-    int pontuacao;                              // pontuação associada à pergunta
+struct Pergunta {  //um objeto 'Pergunta', essa pergunta contém: tem enunciado | alternativas | resposta certa | pontuação;
+    char enunciado[200];
+    char alternativas[NUM_ALTERNATIVAS][100];
+    int correta; // índice da alternativa correta (0 a 3)
+    int pontuacao;
 };
 
-struct Pergunta banco[NUM_TOTAL_PERGUNTAS] = {
+//BANCO DE DADOS ----------------------------------------------------------------------------
+//cada item do vetor é um objeto Pergunta (contem as caracteristicas da pergunta)
+struct Pergunta banco[] = { 
     {"Qual é uma prática sustentável para reduzir o consumo de plástico?",
      {"Usar sacolas reutilizáveis", "Comprar mais embalagens", "Jogar no rio", "Usar copo descartável"}, 0, 100},
     {"O que é reciclagem?",
@@ -109,19 +109,34 @@ struct Pergunta banco[NUM_TOTAL_PERGUNTAS] = {
      {"Reduz o lixo e economiza recursos", "Gera mais resíduos", "É moda", "Não tem impacto"}, 0, 85}
 };
 
+#define NUM_TOTAL_PERGUNTAS (sizeof(banco) / sizeof(banco[0])) //defini automatico a quantidade de perguntas que existem no banco
 
-// Função que embaralha os índices das perguntas para apresentar em ordem aleatória
-void embaralhar_perguntas(int indices[], int tamanho) {
-    // Preenche o vetor com os índices originais
-    for (int i = 0; i < tamanho; i++) {
+void embaralhar_perguntas(int indices[], int tamanho) { // um função que recebe um indices e um tamanho
+    for (int i = 0; i < tamanho; i++) { //gera um indice de todas as perguntas (ex: 20 indices)
         indices[i] = i;
     }
-    // Embaralha os índices usando troca aleatória
-    for (int i = 0; i < tamanho; i++) {
-        int j = rand() % tamanho;
+    for (int i = 0; i < tamanho; i++) { //embaralha os 20 indices entre eles mesmo (troca o 1 pelo 7 | o 2 pelo 12....)
+        int j = rand() % tamanho; //gera número aleatório valido (tamnho do indices)
         int temp = indices[i];
         indices[i] = indices[j];
         indices[j] = temp;
+    }
+}
+
+
+void embaralhar_alternativas(char alternativas[][100], int *correta) { //embaralha as alternativas
+    for (int i = 0; i < 10; i++) { //roda 10 vezes, alterando 2 alternativas aleatóriamente
+        int a = rand() % NUM_ALTERNATIVAS; //seleciona 2 alternativas A e B entre as 4 disponiveis
+        int b = rand() % NUM_ALTERNATIVAS;
+        if (a == b) continue; //se A e B forem igual, continua sem alterar nada.
+        char temp[100];                            // cria um espaço temporario
+        strcpy(temp, alternativas[a]);             // copia o conteudo de A para temp
+        strcpy(alternativas[a], alternativas[b]);  // copia o conteúdo de B para A
+        strcpy(alternativas[b], temp);             // copia o conteúdo de A salvo em 'temp' para B
+        if (a == *correta)  // caso uma delas seja a correta ajusta o indice de qual é a correta depois da alteração
+            *correta = b;  // o * (ponteiro)  é usado pq temos que mudar o valor de um variavel que não  está na função
+        else if (b == *correta)
+            *correta = a;
     }
 }
 
@@ -138,29 +153,6 @@ int stringVazia(const char *str) {
         str++;
     }
     return 1;
-}
-
-
-// Função que embaralha as alternativas de uma pergunta mantendo controle da resposta correta
-void embaralhar_alternativas(char alternativas[][100], int *correta) {
-    for (int i = 0; i < 10; i++) {
-
-        int a = rand() % NUM_ALTERNATIVAS;
-        int b = rand() % NUM_ALTERNATIVAS;
-        if (a == b) continue;
-
-        // Troca o texto das alternativas
-        char temp[100];
-        strcpy(temp, alternativas[a]);
-        strcpy(alternativas[a], alternativas[b]);
-        strcpy(alternativas[b], temp);
-
-        // Ajusta o índice da correta caso ela tenha sido trocada
-        if (a == *correta)
-            *correta = b;
-        else if (b == *correta)
-            *correta = a;
-    }
 }
 
 void print_banner(const char *linhas[], int qtd_linhas) {
@@ -192,7 +184,7 @@ void print_banner(const char *linhas[], int qtd_linhas) {
 }
 
 int main( void ) {
-    setlocale(LC_ALL, ""); // print UTF-8 char
+    SetConsoleOutputCP(CP_UTF8); //para reconhecer acentuação
 
     // banners
     const char *banner_title[] = {
@@ -301,34 +293,31 @@ int main( void ) {
     printf("\n");
 
     for (int i = 0; i < NUM_PERGUNTAS; i++) {
-        int id = indices[i];
-        struct Pergunta p = banco[id];
+        int id = indices[i]; //pega um indice de uma pergunta, já embaralhada
+        struct Pergunta p = banco[id]; //pega a pergunta conforme  o indice
 
-        int correta = p.correta;
-        pontuacao_maxima += p.pontuacao;    
-        embaralhar_alternativas(p.alternativas, &correta);
+        int correta = p.correta; //salva qual é a alternativa correta
+        pontuacao_maxima += p.pontuacao;  
+        embaralhar_alternativas(p.alternativas, &correta); //embaralha as alternativas mantendo a info de qual é a correta
 
-        printf("\nPergunta %d:\n%s\n", i + 1, p.enunciado);
-        for (int j = 0; j < NUM_ALTERNATIVAS; j++) {
+        printf("\nPergunta %d:\n%s\n", i + 1, p.enunciado); //mostra a pergunta
+        for (int j = 0; j < NUM_ALTERNATIVAS; j++) { //mostra as 4 alternativas (possivel colocar mais)
             printf("%c) %s\n", 'a' + j, p.alternativas[j]);
         }
 
-        // Lê a resposta do usuário
         char resp;
-        printf("Sua resposta: ");
+        printf("Sua resposta: "); //resposta do usuário
         scanf(" %c", &resp);
-        while ((getchar()) != '\n'); // limpa o buffer do teclado
-        int index = resp - 'a'; // converte letra para índice (ex: 'a' → 0)
-        
-        // Verifica se a resposta está correta
+        while ((getchar()) != '\n'); //limpa buffer teclado e "enter" sobrando
+        int index = resp - 'a'; //converte a resposta para um número de 0 a 3 [a=97 b=98 c=99 d=100] || b(98) - a(97) = 1(b)
+
         if (index == correta) {
             printf("✅ Correto! +%d pontos\n", p.pontuacao);
-            pontuacao_total += p.pontuacao;
+            pontuacao_total += p.pontuacao; //adiciona pontuação
         } else {
             printf("❌ Errado! Resposta correta: %s\n", p.alternativas[correta]);
         }
     }
-
 
     // Mostra a pontuação final
     printf("\n\n");

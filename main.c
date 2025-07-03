@@ -63,15 +63,17 @@ struct Usuario {
     char participacaoAmbiental[TAM];
 };
 
+// Estrutura de dados para cada pergunta do quiz
 struct Pergunta {  //um objeto 'Pergunta', essa pergunta contém: tem enunciado | alternativas | resposta certa | pontuação;
     char enunciado[200];
     char alternativas[NUM_ALTERNATIVAS][100];
-    int correta; // índice da alternativa correta (0 a 3)
-    int pontuacao;
+    int correta;        // índice da alternativa correta (0 a 3)
+    int pontuacao;      // pontuação atribuída à pergunta
 };
 
 //BANCO DE DADOS ----------------------------------------------------------------------------
-//cada item do vetor é um objeto Pergunta (contem as caracteristicas da pergunta)
+// Cada item do vetor é um objeto Pergunta (contem as caracteristicas da pergunta)
+// Pode adicionar ou remover perguntas daqui
 struct Pergunta banco[] = { 
     {"Qual é uma prática sustentável para reduzir o consumo de plástico?",
      {"Usar sacolas reutilizáveis", "Comprar mais embalagens", "Jogar no rio", "Usar copo descartável"}, 0, 100},
@@ -147,7 +149,7 @@ void embaralhar_alternativas(char alternativas[][100], int *correta) { //embaral
 }
 
 
-// Função para remover '\n' final de strings
+// Função auxiliar para remover o '\n' de strings lidas com fgets
 void limparNovaLinha(char *str) {
     str[strcspn(str, "\n")] = 0;
 }
@@ -161,6 +163,8 @@ int stringVazia(const char *str) {
     return 1;
 }
 
+
+// Imprime banners formatados com bordas e texto centralizado
 void print_banner(const char *linhas[], int qtd_linhas) {
     int i;
 
@@ -299,6 +303,10 @@ int main( void ) {
     printf("\n");
 
     for (int i = 0; i < NUM_PERGUNTAS; i++) {
+        // Mostra a pergunta e alternativas
+        // Lê e verifica a resposta do usuário
+        // Atualiza pontuação de acordo com acerto
+
         int id = indices[i]; //pega um indice de uma pergunta, já embaralhada
         struct Pergunta p = banco[id]; //pega a pergunta conforme  o indice
 
@@ -325,7 +333,8 @@ int main( void ) {
         }
     }
 
-    // Mostra a pontuação final
+
+    // Exibe a pontuação final com destaque
     printf("\n\n");
     print_banner(banner_end_game, 1);
     printf("Pontuação final: %d de %d pontos possíveis.\n", 
@@ -334,8 +343,7 @@ int main( void ) {
     );
 
     
-    // Registra os dados em um banco
-
+    // Armazena as respostas e dados do usuário em um arquivo .txt
     time_t t = time(NULL);
     struct tm tm = *localtime(&t);  
 
@@ -346,7 +354,7 @@ int main( void ) {
     return 1;
 }
 
-    fprintf( 
+    fprintf( // Salva os dados no arquivo com data e hora
         banco_de_dados, 
         "\n\n[%4d-%2d-%2d | %2d:%2d]", 
         tm.tm_year, tm.tm_mon, tm.tm_mday, tm.tm_hour, tm.tm_min
@@ -363,7 +371,7 @@ int main( void ) {
     
     fclose(banco_de_dados);
 
-    Sleep(10000); // 10s para o usuário analizar o resultado
+    Sleep(10000); // Aguarda 10 segundos antes de encerrar (para leitura da tela)
 
     return 0;
 }

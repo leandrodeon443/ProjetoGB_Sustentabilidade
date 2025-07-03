@@ -16,23 +16,29 @@
  * Desenvolvido para fins educacionais.
  */
 
+
+// Bibliotecas Padrão
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h> //funções para trabalhar com strings
-#include <time.h> //funções de tempo
-#include <windows.h> //para reconhecer acentuação
-#include <ctype.h>
-#include <time.h>   // para usar time() com srand()
-#ifdef _WIN32 // para usar sleep()
+#include <string.h>     //funções para trabalhar com strings
+#include <time.h>       //funções de tempo
+#include <windows.h>    //para reconhecer acentuação
+#include <ctype.h>      // Funções para manipular caracteres (como tolower)
+#include <time.h>       // para usar time() com srand()
+#ifdef _WIN32           // para usar sleep()
     #include <windows.h>
 #else
     #include <unistd.h>
 #endif
 
 
+// *******************
+// CONSTANTES
+// *******************
+
 // Constantes para definir limites
-#define NUM_PERGUNTAS 4 //a principio será fixo o número de perguntas, temos que revisar
-#define NUM_ALTERNATIVAS 4 // isso é fixo
+#define NUM_PERGUNTAS 4         //a principio será fixo o número de perguntas, temos que revisar
+#define NUM_ALTERNATIVAS 4      // isso é fixo
 #define TAM 100                 // Define o tamanho de entrada aceita pelo usuário no cadastro
 
 // constantes para os banners

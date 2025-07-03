@@ -309,8 +309,8 @@ int main( void ) {
         printf("Sua resposta: "); //resposta do usuário
         scanf(" %c", &resp);
         while ((getchar()) != '\n'); //limpa buffer teclado e "enter" sobrando
-        int index = resp - 'a'; //converte a resposta para um número de 0 a 3 [a=97 b=98 c=99 d=100] || b(98) - a(97) = 1(b)
-
+        int index = tolower(resp) - 'a'; //converte a resposta para um número de 0 a 3 [a=97 b=98 c=99 d=100] || b(98) - a(97) = 1(b)
+        
         if (index == correta) {
             printf("✅ Correto! +%d pontos\n", p.pontuacao);
             pontuacao_total += p.pontuacao; //adiciona pontuação
